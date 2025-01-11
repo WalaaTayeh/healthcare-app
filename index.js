@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const mysqlConnection = require('./db/mysql');
-const mysqlConnection = require('./db/mysql');
 const MedicalRecord = require('./models/medicalRecord.model');
 const authRoutes = require('./routes/auth.routes'); // Authentication routes
 const adminRoutes = require('./routes/admin.routes');
