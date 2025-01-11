@@ -20,13 +20,7 @@ mongoose
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch((err) => console.error('MongoDB connection error:', err.message));
 
-mysqlConnection.connect((err) => {
-  if (err) {
-    console.error('Error connecting to MySQL:', err.message);
-  } else {
-    console.log('Connected to MySQL database.');
-  }
-});
+
 
 app.get('/api/medical-records', async (req, res) => {
   try {
