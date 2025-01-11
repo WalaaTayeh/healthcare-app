@@ -89,9 +89,6 @@ app.get('/api/patient', verifyToken, checkRole(['Patient']), (req, res) => {
   res.send('Welcome, Patient!');
 });
 
-app.get('/', (req, res) => {
-  res.send('Hello, Healthcare App!');
-});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -101,6 +98,11 @@ app.use((err, req, res, next) => {
 app.get('/', (req, res) => {
   res.send('Healthcare App Backend is running.');
 });
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', message: 'Healthcare App Backend is running.' });
+});
+
 
 
 app.listen(PORT, () => {
