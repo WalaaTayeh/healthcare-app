@@ -25,5 +25,17 @@
   },
   "engines": {
    "node": "18.x"
-  }
+  },
+  "builds":
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    }
+  ,
+  "routes": 
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  
 }
