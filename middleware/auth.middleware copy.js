@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-// Middleware to verify JWT
 exports.verifyToken = (req, res, next) => {
   const token = req.header('Authorization');
   if (!token) return res.status(401).json({ message: 'Access denied. No token provided.' });
@@ -14,7 +13,7 @@ exports.verifyToken = (req, res, next) => {
   }
 };
 
-// Middleware to check user roles
+
 exports.checkRole = (roles) => (req, res, next) => {
   if (!roles.includes(req.user.role)) {
     return res.status(403).json({ message: 'Access denied. Insufficient permissions.' });

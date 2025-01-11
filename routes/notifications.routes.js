@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Notification = require('../models/notification.model');
-
-// Get all notifications
 router.get('/', async (req, res) => {
     try {
         const notifications = await Notification.find();
@@ -11,8 +9,6 @@ router.get('/', async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
-
-// Create a new notification
 router.post('/', async (req, res) => {
     const notification = new Notification({
         userId: req.body.userId,
@@ -26,8 +22,6 @@ router.post('/', async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 });
-
-// Mark a notification as read
 router.patch('/:id', async (req, res) => {
     try {
         const updatedNotification = await Notification.findByIdAndUpdate(
@@ -41,7 +35,6 @@ router.patch('/:id', async (req, res) => {
     }
 });
 
-// Delete a notification
 router.delete('/:id', async (req, res) => {
     try {
         await Notification.findByIdAndDelete(req.params.id);

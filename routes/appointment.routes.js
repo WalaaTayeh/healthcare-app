@@ -28,7 +28,6 @@ router.patch('/:id', verifyToken, checkRole(['Doctor']), async (req, res) => {
   if (!['approved', 'rejected'].includes(status)) {
     return res.status(400).json({ error: 'Invalid status. Must be "approved" or "rejected".' });
   }
-
   try {
     const appointment = await Appointment.findByIdAndUpdate(
       req.params.id,

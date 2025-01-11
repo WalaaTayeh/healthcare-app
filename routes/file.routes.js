@@ -2,11 +2,9 @@ const express = require('express');
 const multer = require('multer');
 const { verifyToken, checkRole } = require('../middleware/auth.middleware');
 const router = express.Router();
-
-// Configure Multer storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Directory where files will be stored
+    cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
     const uniqueName = `${Date.now()}-${file.originalname}`;
@@ -16,7 +14,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// File upload route (Patient only)
 router.post(
   '/upload',
   verifyToken,
