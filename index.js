@@ -98,6 +98,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong.', details: err.message });
 });
 
+app.get('/', (req, res) => {
+  res.send('Healthcare App Backend is running.');
+});
+
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
