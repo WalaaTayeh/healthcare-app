@@ -17,13 +17,13 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/client/$1"
+      "dest": "/client/build/$1"
     }
   ],
   "rewrites": [
     {
-      "source": "/:match*",
-      "destination": "/client/index.html"
+      "source": "/(.*)",
+      "destination": "/client/build/index.html"
     }
   ],
   "env": {
