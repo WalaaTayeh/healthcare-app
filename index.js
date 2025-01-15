@@ -9,38 +9,35 @@ const adminRoutes = require('./routes/admin.routes');
 const userRoutes = require('./routes/user.routes');
 const appointmentRoutes = require('./routes/appointment.routes');
 const fileRoutes = require('./routes/file.routes');
-const { verifyToken, checkRole } = require('./middleware/auth.middleware'); // Only one import here
+const { verifyToken, checkRole } = require('./middleware/auth.middleware');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());
 
 const cors = require("cors");
-app.use(cors({ origin: "http://localhost:5173" }));  // Adjust for your frontend URL
+app.use(cors({ origin: "http://localhost:5173" })); 
 
-// Remove duplicate code, only one route for login
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
   if (email === "user@example.com" && password === "password123") {
-    // Create a JWT token with user id and role
+  
     const token = jwt.sign(
-      { id: "someUserId", role: "Admin" }, // Include the role in the token
+      { id: "someUserId", role: "Admin" }, 
       process.env.JWT_SECRET,
-      { expiresIn: "1h" } // Token expires in 1 hour
+      { expiresIn: "1h" }
     );
-    res.json({ token }); // Send the token in the response
+    res.json({ token }); 
   } else {
-    res.status(401).json({ message: "Invalid email or password" }); // Invalid login credentials
+    res.status(401).json({ message: "Invalid email or password" }); 
   }
 });
 
-// Ensure this route uses verifyToken middleware
 app.get("/dashboard", verifyToken, (req, res) => {
   res.json({ message: "Welcome to the Dashboard!" });
 });
 
-// Static file serving for the front-end
 app.use(express.static(path.join(__dirname, "client/build")));
 
 
@@ -114,13 +111,10 @@ app.delete('/api/medical-records/:id', async (req, res) => {
   }
 });
 
-// For routing all unknown paths to the React app (client)
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client/build", "index.html"));
 });
 
-
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong.', details: err.message });
