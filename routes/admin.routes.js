@@ -5,7 +5,6 @@ const Billing = require('../models/billing.model');
 const { verifyToken, checkRole } = require('../middleware/auth.middleware');
 const router = express.Router();
 
-// Get all users (Admin only)
 router.get('/users', verifyToken, checkRole(['Admin']), async (req, res) => {
   try {
     const users = await User.find();
@@ -15,7 +14,7 @@ router.get('/users', verifyToken, checkRole(['Admin']), async (req, res) => {
   }
 });
 
-// Approve or reject a user (Admin only)
+
 router.patch('/users/:id/status', verifyToken, checkRole(['Admin']), async (req, res) => {
   const { status } = req.body;
   if (!['approved', 'rejected'].includes(status)) {
@@ -32,7 +31,7 @@ router.patch('/users/:id/status', verifyToken, checkRole(['Admin']), async (req,
   }
 });
 
-// Delete a user (Admin only)
+
 router.delete('/users/:id', verifyToken, checkRole(['Admin']), async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
@@ -44,7 +43,6 @@ router.delete('/users/:id', verifyToken, checkRole(['Admin']), async (req, res) 
   }
 });
 
-// Billing routes (as added earlier)
 router.get('/billing', verifyToken, checkRole(['Admin']), async (req, res) => {
   try {
     const bills = await Billing.find().populate('patientId', 'username email');

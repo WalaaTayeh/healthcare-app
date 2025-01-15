@@ -3,7 +3,7 @@ const Appointment = require('../models/appointment.model');
 const { verifyToken, checkRole } = require('../middleware/auth.middleware');
 const router = express.Router();
 
-// Create an appointment (Patient only)
+
 router.post('/', verifyToken, checkRole(['Patient']), async (req, res) => {
   try {
     const { doctorId, date, time } = req.body;
@@ -22,7 +22,6 @@ router.post('/', verifyToken, checkRole(['Patient']), async (req, res) => {
   }
 });
 
-// Approve or reject an appointment (Doctor only)
 router.patch('/:id', verifyToken, checkRole(['Doctor']), async (req, res) => {
   const { status } = req.body;
   if (!['approved', 'rejected'].includes(status)) {

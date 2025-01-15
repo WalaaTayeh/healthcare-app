@@ -4,30 +4,79 @@ const mongoose = require('mongoose');
 const path = require('path');
 const mysqlConnection = require('./db/mysql');
 const MedicalRecord = require('./models/medicalRecord.model');
-const authRoutes = require('./routes/auth.routes'); // Authentication routes
+const authRoutes = require('./routes/auth.routes');
 const adminRoutes = require('./routes/admin.routes');
 const userRoutes = require('./routes/user.routes');
 const appointmentRoutes = require('./routes/appointment.routes');
 const fileRoutes = require('./routes/file.routes');
-const { verifyToken, checkRole } = require('./middleware/auth.middleware'); // Auth middleware
+const { verifyToken, checkRole } = require('./middleware/auth.middleware'); // Only one import here
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());
+
+const cors = require("cors");
+app.use(cors({ origin: "http://localhost:5173" }));  // Adjust for your frontend URL
+
+// Remove duplicate code, only one route for login
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (email === "user@example.com" && password === "password123") {
+    // Create a JWT token with user id and role
+    const token = jwt.sign(
+      { id: "someUserId", role: "Admin" }, // Include the role in the token
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" } // Token expires in 1 hour
+    );
+    res.json({ token }); // Send the token in the response
+  } else {
+    res.status(401).json({ message: "Invalid email or password" }); // Invalid login credentials
+  }
+});
+
+// Ensure this route uses verifyToken middleware
+app.get("/dashboard", verifyToken, (req, res) => {
+  res.json({ message: "Welcome to the Dashboard!" });
+});
+
+// Static file serving for the front-end
+app.use(express.static(path.join(__dirname, "client/build")));
+
+
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api/files', fileRoutes);
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.get('/api/admin', verifyToken, checkRole(['Admin']), (req, res) => {
+  res.send('Welcome, Admin!');
+});
+
+app.get('/api/doctor', verifyToken, checkRole(['Doctor']), (req, res) => {
+  res.send('Welcome, Doctor!');
+});
+
+app.get('/api/patient', verifyToken, checkRole(['Patient']), (req, res) => {
+  res.send('Welcome, Patient!');
+});
 
 mongoose
   .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch((err) => console.error('MongoDB connection error:', err.message));
 
-
-
 app.get('/api/medical-records', async (req, res) => {
   try {
     const records = await MedicalRecord.find();
+    console.log('Records retrieved:', records.length);
     res.status(200).json(records);
   } catch (err) {
-    res.status(500).json({ error: 'Error fetching records.', details: err.message });
+    console.error('Error fetching records:', err.message);
+    res.status(500).json({ error: 'Error fetching records' });
   }
 });
 
@@ -65,45 +114,17 @@ app.delete('/api/medical-records/:id', async (req, res) => {
   }
 });
 
-app.use('/api/auth', authRoutes);
-
-app.use('/api/admin', adminRoutes);
-
-app.use('/api/user', userRoutes);
-
-app.use('/api/appointments', appointmentRoutes);
-
-app.use('/api/files', fileRoutes);
-
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-app.get('/api/admin', verifyToken, checkRole(['Admin']), (req, res) => {
-  res.send('Welcome, Admin!');
-});
-
-app.get('/api/doctor', verifyToken, checkRole(['Doctor']), (req, res) => {
-  res.send('Welcome, Doctor!');
-});
-
-app.get('/api/patient', verifyToken, checkRole(['Patient']), (req, res) => {
-  res.send('Welcome, Patient!');
+// For routing all unknown paths to the React app (client)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client/build", "index.html"));
 });
 
 
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong.', details: err.message });
 });
-
-app.get('/', (req, res) => {
-  res.send('Healthcare App Backend is running.');
-});
-
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'Healthcare App Backend is running.' });
-});
-
-
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
