@@ -1,14 +1,17 @@
-
 {
   "version": 2,
   "builds": [
     {
       "src": "client/package.json",
-      "use": "@vercel/node"
+      "use": "@vercel/react"
     },
     {
       "src": "client/public/*",
       "use": "@vercel/static"
+    },
+    {
+      "src": "package.json",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -17,13 +20,13 @@
       "dest": "/client/$1"
     }
   ],
-  "builds": [
+  "rewrites": [
     {
-      "src": "package.json",
-      "use": "@vercel/node"
+      "source": "/:match*",
+      "destination": "/client/index.html"
     }
   ],
   "env": {
     "NODE_VERSION": "20"
-}
+  }
 }
