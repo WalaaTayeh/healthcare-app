@@ -1,4 +1,4 @@
-// vercel.json (if you have one)
+
 {
   "version": 2,
   "builds": [
@@ -16,5 +16,14 @@
       "src": "/(.*)",
       "dest": "/client/$1"
     }
-  ]
+  ],
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/node"
+    }
+  ],
+  "env": {
+    "NODE_VERSION": "20"
+}
 }
