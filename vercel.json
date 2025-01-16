@@ -14,18 +14,6 @@
       "use": "@vercel/node"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/client/$1"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/client/index.html"
-    }
-  ],
   "env": {
     "NODE_VERSION": "20"
   }
