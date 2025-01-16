@@ -3,7 +3,7 @@
   "builds": [
     {
       "src": "client/package.json",
-      "use": "@vercel/react"
+      "use": "@vercel/static-build"
     },
     {
       "src": "client/public/*",
@@ -14,7 +14,20 @@
       "use": "@vercel/node"
     }
   ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/client/$1"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/client/build/index.html"
+    }
+  ],
   "env": {
     "NODE_VERSION": "20"
   }
 }
+
