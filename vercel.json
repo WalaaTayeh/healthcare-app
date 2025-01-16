@@ -17,7 +17,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/client/$1"
+      "dest": "/client/build/$1"
     }
   ],
   "rewrites": [
@@ -30,3 +30,4 @@
     "NODE_VERSION": "20"
   }
 }
+
